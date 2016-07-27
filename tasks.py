@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 @task
-def requirements(upgrade=True):
+def requirements(ctx, upgrade=True):
     cmd = 'pip install -r requirements.txt'
     if upgrade:
         cmd += ' --upgrade'
@@ -24,7 +24,7 @@ def requirements(upgrade=True):
 
 
 @task
-def apify(filename, tablename=None):
+def apify(ctx, filename, tablename=None):
     try:
         filenames = glob.glob(filename, recursive=True)
     except TypeError:  # recursive glob in Python 3.5+ only
@@ -50,32 +50,32 @@ def apify(filename, tablename=None):
 
 
 @task
-def delete_from_bucket(filename, bucket_name=None):
+def delete_from_bucket(ctx, filename, bucket_name=None):
     aws.delete_from_bucket(filename, bucket_name)
 
 
 @task
-def copy_to_bucket(filename, bucket_name=None):
+def copy_to_bucket(ctx, filename, bucket_name=None):
     aws.copy_to_bucket(filename, bucket_name)
 
 
 @task
-def list_bucket(bucket_name=None):
+def list_bucket(ctx, bucket_name=None):
     aws.list_bucket(bucket_name)
 
 
 @task
-def fetch_bucket(bucket_name=None):
+def fetch_bucket(ctx, bucket_name=None):
     aws.fetch_bucket(bucket_name)
 
 
 @task
-def serve():
+def serve(ctx):
     app.make_app().run(host='0.0.0.0')
 
 
 @task
-def refresh(clear_tables=True):
+def refresh(ctx, clear_tables=True):
     logger.info('Refresh invoked')
     with app.make_app().app_context():
         rlog_id = RefreshLog.start()
@@ -91,10 +91,10 @@ def refresh(clear_tables=True):
 
 
 @task
-def quick_refresh():
+def quick_refresh(ctx):
     refresh(clear_tables=False)
 
 
 @task
-def clear():
+def clear(ctx):
     utils.clear_tables()
