@@ -1,5 +1,5 @@
 import config
-from app import make_app
+from flask_app import make_app
 
 import pytest
 from sqlalchemy import create_engine, MetaData
